@@ -1,5 +1,3 @@
-# 7/11/2022 commit
-
 """I created this menstrual cycle calendar for a couple reasons. 
 For data privacy, I wanted a menstruation calendar for my personal use. 
 Further, while the supplemental options provided in existing menstruation apps can be very useful, I opt for something simpler.
