@@ -13,7 +13,7 @@ root.title("Menstrual Cycle Calendar")
 root.geometry("400x300")
 root.resizable(False, False)
 root.config(background="#EC7063")
-window_icon = PhotoImage(file="C:\\Users\\gjku\\personal-coding-projects\\menstruation_cal\\cal_icon.png")
+window_icon = PhotoImage(file="C:\\Users\\gjku\\personal-coding-projects\\menstruation_calendar\\cal_icon.png")
 root.iconphoto(False, window_icon)
 # icon link: https://iconarchive.com/show/small-n-flat-icons-by-paomedia/calendar-icon.html
 #   says that its public domain
