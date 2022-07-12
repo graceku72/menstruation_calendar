@@ -1,4 +1,4 @@
-# Testing for GitHub - 7/11/2022
+# Testing for GitHub attempt 2 - 7/11/2022
 
 """I created this menstrual cycle calendar for a couple reasons. 
 For data privacy, I wanted a menstruation calendar for my personal use. 
