@@ -5,8 +5,8 @@ I could've chosen to use the calendar app on my phone, but this already holds ot
 
 from tkinter import *
 from tkcalendar import *
-#from tkinter import filedialog
-#from configparser import ConfigParser
+import json
+from datetime import datetime
 
 root = Tk()
 root.title("Menstrual Cycle Calendar")
@@ -18,27 +18,34 @@ root.iconphoto(False, window_icon)
 # icon link: https://iconarchive.com/show/small-n-flat-icons-by-paomedia/calendar-icon.html
 #   says that its public domain
 
-# parser = ConfigParser()
-# parser.read("savecal.ini")
-#saved_cal = parser.get("colors", "cal")
-
 cal = Calendar(root, showweeknumbers=False, selectmode="day", firstweekday="sunday", weekendbackground="white", weekendforeground="black", othermonthbackground="light grey", othermonthwebackground="light grey", background="#F0B27A", foreground="black", bordercolor="#F5CBA7", headersbackground="#F5CBA7")
 # change cal font?
 cal.pack(pady=20, fill="both", expand=True)
+cal.tag_config("make_red", background="#B30000")
+cal.tag_config("remove_red", background="white", foreground="black")
+
+json_dict: dict[str] = {}
 
 
 def remove():
     """Reverts a selected date to its original appearance."""
     selected_date = cal.selection_get()
-    cal.tag_config("remove", background="white", foreground="black")
-    cal.calevent_create(selected_date, "", tags=["remove"])
-    remove_button["state"] = DISABLED
-    menstruating_button["state"] = NORMAL
+    cal.calevent_create(selected_date, "", tags=["remove_red"])
+
+    marked_date = cal.get_date()
+    json_dict[marked_date] = "remove_red"
+    data_file = open("C:\\Users\\gjku\\personal-coding-projects\\menstruation_calendar\\save_cal.json", "w")
+    json.dump(json_dict, data_file)
+    data_file.close()
+
+    # remove_button["state"] = DISABLED
+    # menstruating_button["state"] = NORMAL
     # cal.calevent_remove(selected_date)
         #   when this funct is a part of menstruacting funct, why wont red background color go away when using this method?? - ask on stack exchange??
 
 
-remove_button = Button(root, text="Remove", command=remove, state=DISABLED)
+remove_button = Button(root, text="Remove", command=remove)
+# start w/ state=DISABLED for this button?
 # change button font?
 remove_button.pack(side=RIGHT, padx=60, pady=20)
 
@@ -46,10 +53,16 @@ remove_button.pack(side=RIGHT, padx=60, pady=20)
 def menstruating():
     """Indicates menstruation on the selected date by changing the background color to red."""
     selected_date = cal.selection_get()
-    cal.tag_config("selected", background='#B30000')
-    cal.calevent_create(selected_date, "", tags=["selected"])
-    remove_button["state"] = NORMAL
-    menstruating_button["state"] = DISABLED
+    cal.calevent_create(selected_date, "", tags=["make_red"])
+
+    marked_date = cal.get_date()
+    json_dict[marked_date] = "make_red"
+    data_file = open("C:\\Users\\gjku\\personal-coding-projects\\menstruation_calendar\\save_cal.json", "w")
+    json.dump(json_dict, data_file)
+    data_file.close()
+
+    #remove_button["state"] = NORMAL
+    #menstruating_button["state"] = DISABLED
     # enable menstruating button when mouse is clicked on new date that does not have red background & disable the remove button
 
 
@@ -57,13 +70,12 @@ menstruating_button = Button(root, text="Menstruating", command=menstruating)
 # change button font?
 menstruating_button.pack(side=LEFT, padx=60, pady=20)
 
-
-def save_and_exit():
-    root.destroy()
-# fix this so it actually saves, look up: how to save actions done in tkinter window before exiting
-# may have to create a button for this?
-# how to do autosave?
-    #file_name = filedialog.asksaveasfilename(initialdir="C:/personal_projects/data", title="Save Changes", filetypes=(("Dat Files", "*.dat"), ("All Files", "*.*")))
-
+opening = open("C:\\Users\\gjku\\personal-coding-projects\\menstruation_calendar\\save_cal.json")
+cal_events = json.load(opening)
+for event in cal_events:
+    datetime_date_obj = datetime.strptime(event, "%m/%d/%y")
+    cal.calevent_create(datetime_date_obj, "", tags=[cal_events[event]])
+    json_dict[event] = cal_events[event]
+opening.close()
 
 root.mainloop()
