@@ -70,3 +70,14 @@ def menstruating(): #scrapped code attempts
     #red.insert('1.0', cal)
     # for line in range(3, len(cal.splitlines()) + 1):
     #     red.tag_add("Start", f"{line}.18", f"{line}.20")
+
+
+def check_date(event):
+#     # look up what is the event parameter
+#     # write comment for functions function
+    selected_date = cal.selection_get()
+
+#     menstruating_button["state"] = DISABLED if cal.get_calevents(date=selected_date, tag="make_red") else NORMAL
+#         # remove_button["state"] = NORMAL if cal.get_calevents(date=selected_date, tag="make_red") else DISABLED    
+#     remove_button["state"] = DISABLED if cal.get_calevents(date=selected_date, tag="remove_red") else NORMAL
+    # menstruating_button["state"] = NORMAL if cal.get_calevents(date=selected_date, tag="remove_red") else DISABLED

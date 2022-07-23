@@ -17,65 +17,71 @@ window_icon = PhotoImage(file="C:\\Users\\gjku\\personal-coding-projects\\menstr
 root.iconphoto(False, window_icon)
 # icon link: https://iconarchive.com/show/small-n-flat-icons-by-paomedia/calendar-icon.html
 #   says that its public domain
+# make it so that the window opens in same place everytime
 
 cal = Calendar(root, showweeknumbers=False, selectmode="day", firstweekday="sunday", weekendbackground="white", weekendforeground="black", othermonthbackground="light grey", othermonthwebackground="light grey", background="#F0B27A", foreground="black", bordercolor="#F5CBA7", headersbackground="#F5CBA7")
 # change cal font?
 cal.pack(pady=20, fill="both", expand=True)
 cal.tag_config("make_red", background="#B30000")
-cal.tag_config("remove_red", background="white", foreground="black")
 
-json_dict: dict[str] = {}
-
-
-def remove():
-    """Reverts a selected date to its original appearance."""
-    selected_date = cal.selection_get()
-    cal.calevent_create(selected_date, "", tags=["remove_red"])
-
-    marked_date = cal.get_date()
-    json_dict[marked_date] = "remove_red"
-    data_file = open("C:\\Users\\gjku\\personal-coding-projects\\menstruation_calendar\\save_cal.json", "w")
-    json.dump(json_dict, data_file)
-    data_file.close()
-
-    # remove_button["state"] = DISABLED
-    # menstruating_button["state"] = NORMAL
-    # cal.calevent_remove(selected_date)
-        #   when this funct is a part of menstruacting funct, why wont red background color go away when using this method?? - ask on stack exchange??
-
-
-remove_button = Button(root, text="Remove", command=remove)
-# start w/ state=DISABLED for this button?
-# change button font?
-remove_button.pack(side=RIGHT, padx=60, pady=20)
+json_list: list[str] = []
 
 
 def menstruating():
     """Indicates menstruation on the selected date by changing the background color to red."""
     selected_date = cal.selection_get()
     cal.calevent_create(selected_date, "", tags=["make_red"])
+    menstruating_button["state"] = DISABLED
 
     marked_date = cal.get_date()
-    json_dict[marked_date] = "make_red"
+    json_list.append(marked_date)
     data_file = open("C:\\Users\\gjku\\personal-coding-projects\\menstruation_calendar\\save_cal.json", "w")
-    json.dump(json_dict, data_file)
+    json.dump(json_list, data_file)
     data_file.close()
-
-    #remove_button["state"] = NORMAL
-    #menstruating_button["state"] = DISABLED
-    # enable menstruating button when mouse is clicked on new date that does not have red background & disable the remove button
 
 
 menstruating_button = Button(root, text="Menstruating", command=menstruating)
 # change button font?
 menstruating_button.pack(side=LEFT, padx=60, pady=20)
 
+
+def remove():
+    """Reverts a selected date to its original appearance."""
+    selected_date = cal.selection_get()
+    cal.calevent_remove(tag="make_red", date=selected_date)
+    remove_button["state"] = DISABLED
+
+    marked_date = cal.get_date()
+    json_list.pop(json_list.index(marked_date))
+    data_file = open("C:\\Users\\gjku\\personal-coding-projects\\menstruation_calendar\\save_cal.json", "w")
+    json.dump(json_list, data_file)
+    data_file.close()
+
+
+remove_button = Button(root, text="Remove", command=remove, state=DISABLED)
+# change button font?
+remove_button.pack(side=RIGHT, padx=60, pady=20)
+
+
+def check_date(event):
+     # write comment for functions function
+    selected_date = cal.selection_get()
+    if cal.get_calevents(date=selected_date, tag="make_red"):
+        menstruating_button["state"] = DISABLED
+        remove_button["state"] = NORMAL
+    else:
+        menstruating_button["state"] = NORMAL
+        remove_button["state"] = DISABLED
+
+
+cal.bind("<<CalendarSelected>>", check_date)
+
 opening = open("C:\\Users\\gjku\\personal-coding-projects\\menstruation_calendar\\save_cal.json")
 cal_events = json.load(opening)
 for event in cal_events:
     datetime_date_obj = datetime.strptime(event, "%m/%d/%y")
-    cal.calevent_create(datetime_date_obj, "", tags=[cal_events[event]])
-    json_dict[event] = cal_events[event]
+    cal.calevent_create(datetime_date_obj, "", tags="make_red")
+    json_list.append(event)
 opening.close()
 
 root.mainloop()
