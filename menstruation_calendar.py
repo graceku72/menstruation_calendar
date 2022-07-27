@@ -10,17 +10,15 @@ from datetime import datetime
 
 root = Tk()
 root.title("Menstrual Cycle Calendar")
-root.geometry("400x300")
+root.geometry("400x300+400+100")
 root.resizable(False, False)
 root.config(background="#EC7063")
 window_icon = PhotoImage(file="C:\\Users\\gjku\\personal-coding-projects\\menstruation_calendar\\cal_icon.png")
 root.iconphoto(False, window_icon)
 # icon link: https://iconarchive.com/show/small-n-flat-icons-by-paomedia/calendar-icon.html
-#   says that its public domain
-# make it so that the window opens in same place everytime
+# icon is public domain
 
 cal = Calendar(root, showweeknumbers=False, selectmode="day", firstweekday="sunday", weekendbackground="white", weekendforeground="black", othermonthbackground="light grey", othermonthwebackground="light grey", background="#F0B27A", foreground="black", bordercolor="#F5CBA7", headersbackground="#F5CBA7")
-# change cal font?
 cal.pack(pady=20, fill="both", expand=True)
 cal.tag_config("make_red", background="#B30000")
 
@@ -41,7 +39,6 @@ def menstruating():
 
 
 menstruating_button = Button(root, text="Menstruating", command=menstruating)
-# change button font?
 menstruating_button.pack(side=LEFT, padx=60, pady=20)
 
 
@@ -59,12 +56,11 @@ def remove():
 
 
 remove_button = Button(root, text="Remove", command=remove, state=DISABLED)
-# change button font?
 remove_button.pack(side=RIGHT, padx=60, pady=20)
 
 
 def check_date(event):
-     # write comment for functions function
+    """To determine the state of buttons, checks whether a selected date has been marked red or not."""
     selected_date = cal.selection_get()
     if cal.get_calevents(date=selected_date, tag="make_red"):
         menstruating_button["state"] = DISABLED
