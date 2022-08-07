@@ -38,7 +38,7 @@ def menstruating():
     data_file.close()
 
 
-menstruating_button = Button(root, text="Menstruating", command=menstruating)
+menstruating_button = Button(root, text="Menstruating", command=menstruating, state=DISABLED)
 menstruating_button.pack(side=LEFT, padx=60, pady=20)
 
 
